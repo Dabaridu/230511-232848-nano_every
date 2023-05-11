@@ -118,14 +118,15 @@ void setup(){
   // static text
   myScreen.setTextSize(1);
   myScreen.text("Meritev toka je:",0,0);
-  myScreen.text("[A]",0,30);
+  myScreen.text("[A]",70,30);
   
 }
 
 void loop(){
 
-  procentHall = map(IRMS, 0, 5, 0, 100); //Mapiraj vrednosti toka 0%-100%, tole zna ne delat --> problem v kalkulaciji IRMS 
- 
+  //procentHall = map(IRMS, 0, 5, 0, 100); //Mapiraj vrednosti toka 0%-100%, tole zna ne delat --> problem v kalkulaciji IRMS 
+ procentHall = 88;
+
   Rele(); 
 
   //-------------------------------updating text-------------------------------
@@ -133,6 +134,7 @@ void loop(){
     ScreenHall();
     ScreenProcent();
     ScreenProgBar();
+    ScreenLED();
     interval1 = millis();
   }
 
