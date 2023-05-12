@@ -118,8 +118,8 @@ void setup(){
   // static text
   myScreen.setTextSize(1);
   myScreen.text("Meritev toka je:",0,0);
-  myScreen.setTextSize(3);
-  myScreen.text("[mA]",70,10);
+  myScreen.setTextSize(2);
+  myScreen.text("[mA]",90,10);
 
   //startup LED test
   myScreen.fill(0,255,0);
