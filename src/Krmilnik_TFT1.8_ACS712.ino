@@ -133,9 +133,14 @@ void loop(){
 
   procentHall = map(IRMS, 0, 5, 0, 100); //Mapiraj vrednosti toka 0%-100%, tole zna ne delat --> problem v kalkulaciji IRMS 
   //procentHall = 88; //DEBUG SCREEN
+  
+    Rele(); 
 
-  Rele(); 
-
+    if ((millis() - interval2) > THall){
+    Hall();
+    interval2 = millis();
+    }
+    
   //-------------------------------updating text-------------------------------
   if ((millis() - interval1) > refresh){ 
     ScreenHall();
@@ -149,7 +154,6 @@ void loop(){
 }
 
 void Hall(){
-  if ((millis() - interval2) > THall){
   new_val = analogRead(hall);
     if(new_val > old_val) {
       old_val = new_val;
@@ -169,9 +173,8 @@ void Hall(){
       Serial.print("  IRMS: ");
       Serial.println(IRMS);
       
-      interval2 = millis();
+
     }
-  }
 }
 
 // ---------------------------handling releja za DC meritve ------------------------------------
