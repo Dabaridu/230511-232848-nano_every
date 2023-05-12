@@ -37,11 +37,11 @@ TFT myScreen = TFT(CS, DC, RESET);
 // variable to keep track of the elapsed time
 int counter = 0;
 // char array to print on screen 
-char printout[charsize];
 
 int interval1;
 int interval2;
-char printoutToClear[charsize];
+
+
 
 //stanje releja 
 bool rele = false;
@@ -118,7 +118,8 @@ void setup(){
   // static text
   myScreen.setTextSize(1);
   myScreen.text("Meritev toka je:",0,0);
-  myScreen.text("[A]",80,30);
+  myScreen.setTextSize(3);
+  myScreen.text("[mA]",70,10);
 
   //startup LED test
   myScreen.fill(0,255,0);
@@ -131,7 +132,7 @@ void setup(){
 
 void loop(){
 
-  procentHall = map(IRMS, 0, 5, 0, 100); //Mapiraj vrednosti toka 0%-100%, tole zna ne delat --> problem v kalkulaciji IRMS 
+  procentHall = map(IRMS, 0, 1000, 0, 100); //Mapiraj vrednosti toka 0%-100%, tole zna ne delat --> problem v kalkulaciji IRMS 
   //procentHall = 88; //DEBUG SCREEN
   
     Rele(); 
@@ -143,10 +144,13 @@ void loop(){
     
   //-------------------------------updating text-------------------------------
   if ((millis() - interval1) > refresh){ 
+    Serial.print("  IRMS: ");
+    Serial.println(IRMS);
     ScreenHall();
     ScreenProcent();
     ScreenProgBar();
     ScreenLED();
+
     interval1 = millis();
   }
 
@@ -160,7 +164,7 @@ void Hall(){
     }
   
   else {
-      delayMicroseconds(50);
+      //delayMicroseconds(50);
       new_val = analogRead(A0);
         if(new_val < old_val) {
           max_val = old_val;
@@ -169,11 +173,6 @@ void Hall(){
       
       rms = max_val * 5.00 * 0.707 / 1024;
       IRMS = rms * calibration_const;
-      
-      Serial.print("  IRMS: ");
-      Serial.println(IRMS);
-      
-
     }
 }
 
@@ -280,6 +279,8 @@ void ScreenHall(){
   //-----------------------------------izpis merjene vrednosti DC meritev-----------------------------
     // convert mesure to a string
   String transform = String (IRMS); //<-- tu vstavi vrednost za izpis na zaslonu
+  char printoutToClear[charsize];
+  char printout[charsize];
   // add converted mesure(type: string) to an array
   transform.toCharArray(printout,charsize);
   
@@ -301,6 +302,8 @@ void ScreenProcent(){
         //-----------------------------------izpis merjene vrednosti DC meritev-----------------------------
     // convert procentHall to a string
   String transform = String (procentHall); //<-- tu vstavi vrednost za izpis na zaslonu
+  char printoutToClear[charsize];
+  char printout[charsize];
   // add converted mesure(type: string) to an array
   transform.toCharArray(printout,charsize);
   
