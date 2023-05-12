@@ -118,14 +118,21 @@ void setup(){
   // static text
   myScreen.setTextSize(1);
   myScreen.text("Meritev toka je:",0,0);
-  myScreen.text("[A]",70,30);
+  myScreen.text("[A]",80,30);
+
+  //startup LED test
+  myScreen.fill(0,255,0);
+  myScreen.rect(14,70,20,20);
+  delay(2000);
+  myScreen.fill(0,0,0);
+  myScreen.rect(14,70,20,20);
   
 }
 
 void loop(){
 
-  //procentHall = map(IRMS, 0, 5, 0, 100); //Mapiraj vrednosti toka 0%-100%, tole zna ne delat --> problem v kalkulaciji IRMS 
- procentHall = 88;
+  procentHall = map(IRMS, 0, 5, 0, 100); //Mapiraj vrednosti toka 0%-100%, tole zna ne delat --> problem v kalkulaciji IRMS 
+  //procentHall = 88; //DEBUG SCREEN
 
   Rele(); 
 
@@ -190,8 +197,13 @@ void Hall(){
 void Rele(){
     //vpiši stanje releja na izhod
   digitalWrite(StanjeRele, rele);
+
+  while(digitalRead(StartTipka)){
+    digitalWrite(StanjeRele, 1);
+  }
+
   //beri ukaz za rele
-  if ((mesure() >= mejnaVrednost)||(mesure() <= -mejnaVrednost)){
+  if ((procentHall >= 90)){
     rele = false;
   }
   else if(digitalRead(StopTipka)==HIGH){
@@ -199,10 +211,6 @@ void Rele(){
   }
   else if(digitalRead(StartTipka)==HIGH){
     rele = true;
-
-    myScreen.noStroke(); // don't draw a line around the next rectangle
-    myScreen.fill(0,0,0); // set the fill color to black
-    myScreen.rect(98,10,20,20); //draw a rectangle across the screen // y pos, x pos, sizey, sizex
   }
 }
 
@@ -297,10 +305,10 @@ void ScreenProcent(){
     myScreen.setTextSize(1);
     
     myScreen.stroke(0,0,0); //fill brush with black
-    myScreen.text(printoutToClear,0,30);
+    myScreen.text(printoutToClear,0,40);
     
     myScreen.stroke(0,255,255); //fill brush with color
-    myScreen.text(printout,0,30);
+    myScreen.text(printout,0,40);
     
     //nauč se kako kopirat array, da boš lahka zbrisal prejšn tekst preden na njegovo mesto napišeš novga... Narjen
     memcpy(printoutToClear, printout, strlen(printout)); //Duplicate array to store in data 
@@ -308,12 +316,12 @@ void ScreenProcent(){
 
 // izpis meritev z HALL senzorjem 
 void ScreenProgBar(){
-      //---------------------------------PROGRESS BAR ---------------------------------
+          //---------------------------------PROGRESS BAR ---------------------------------
     // width 128 - ()
     myScreen.fill(255,255,255); // set the fill color to white
-    myScreen.rect(40,14,20,procentHall); //draw a rectangle across previous rectangle (y pos, x pos, sizey, sizex)
+    myScreen.rect(14,40,procentHall,20); //draw a rectangle across previous rectangle (y pos, x pos, sizey, sizex)
     myScreen.fill(0,0,0); // set the fill color to black
-    myScreen.rect(40,14+procentHall,20,100-procentHall); //draw a rectangle across previous rectangle (y pos, x pos, sizey, sizex)
+    myScreen.rect(14+procentHall,40,100-procentHall,20); //draw a rectangle across previous rectangle (y pos, x pos, sizey, sizex)
 }
 
 //----------------------------------------uporaba SD kartice --------------------------------------------------
@@ -360,24 +368,24 @@ void ScreenLED(){
   yPos = 70; 
 
     if (procentHall <= 75){
-      Green(33);
+      Green(0);
+    }
+    else{
+      Black(0);
+    }
+
+    if ((procentHall >= 75)&&(procentHall <= 90)){
+      Yellow(33);
     }
     else{
       Black(33);
     }
 
-    if ((procentHall >= 75)&&(procentHall <= 90)){
-      Yellow(66);
+    if (procentHall >= 90){
+      Red(66);
     }
     else{
       Black(66);
-    }
-
-    if (procentHall >= 90){
-      Red(99);
-    }
-    else{
-      Black(99);
     }
 }
 
